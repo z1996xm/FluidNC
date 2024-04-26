@@ -22,6 +22,6 @@ namespace Machine {
 
     void I2SOBus::init() {
         log_info("I2SO BCK:" << _bck.name() << " WS:" << _ws.name() << " DATA:" << _data.name());
-        i2s_out_init();
+        i2s_out_init();   
     }
 }

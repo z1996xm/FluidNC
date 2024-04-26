@@ -25,7 +25,7 @@
 #include "src/Protocol.h"       // rtAlarm
 #include "src/Report.h"         // hex message
 #include "src/Configuration/HandlerType.h"
-
+#include "../I2SOut.h"
 #include <freertos/task.h>
 #include <freertos/queue.h>
 #include <atomic>
@@ -75,6 +75,8 @@ namespace Spindles {
         ModbusCommand next_cmd;
         uint8_t       rx_message[VFD_RS485_MAX_MSG_SIZE];
         bool          safetyPollingEnabled = instance->safety_polling();
+        u8_t  dir=0;
+        u8_t  dir1=0;
 
         for (; true; delay_ms(VFD_RS485_POLL_RATE)) {
             std::atomic_thread_fence(std::memory_order::memory_order_seq_cst);  // read fence for settings
@@ -170,6 +172,29 @@ namespace Spindles {
 #endif
             }
 
+            // //test Spindle_FB io
+            // pinMode(1, OUTPUT);
+            // if(dir){
+            //     digitalWrite(1, 0);   
+            //     dir = 0;  
+            // }
+            // else{
+            //     digitalWrite(1, 1);
+            //     dir = 1;  
+            // }   
+
+            // //test PWM
+            // pinMode(6, OUTPUT);
+            // if(dir1){
+            //     digitalWrite(6, 0);   
+            //     dir1 = 0;  
+            // }
+            // else{
+            //     digitalWrite(6, 1);
+            //     dir1 = 1;  
+            // }  
+           
+
             // Assume for the worst, and retry...
             int retry_count = 0;
             for (; retry_count < MAX_RETRIES; ++retry_count) {
@@ -183,6 +208,12 @@ namespace Spindles {
                 size_t current_read = uart.timedReadBytes(rx_message, next_cmd.rx_length, response_ticks);
                 read_length += current_read;
 
+                int retry_count_test = 0;
+                for (; retry_count_test < 16; retry_count_test++) {
+                    log_debug(rx_message[retry_count_test]);
+                }
+                log_debug(current_read);
+                
                 // Apparently some Huanyang report modbus errors in the correct way, and the rest not. Sigh.
                 // Let's just check for the condition, and truncate the first byte.
                 if (read_length > 0 && instance->_modbus_id != 0 && rx_message[0] == 0) {

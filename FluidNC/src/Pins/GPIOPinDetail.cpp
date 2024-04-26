@@ -51,26 +51,19 @@ namespace Pins {
             case 14:  // Outputs PWM signal at boot
             case 15:  // Outputs PWM signal at boot
             case 27:
+            case 28:
             case 32:
             case 33:
                 return PinCapabilities::Native | PinCapabilities::Input | PinCapabilities::Output | PinCapabilities::PullUp |
                        PinCapabilities::PullDown | PinCapabilities::ADC | PinCapabilities::PWM | PinCapabilities::ISR |
                        PinCapabilities::UART;
 
-            case 25:
-            case 26:
-                return PinCapabilities::Native | PinCapabilities::Input | PinCapabilities::Output | PinCapabilities::PullUp |
-                       PinCapabilities::PullDown | PinCapabilities::ADC | PinCapabilities::DAC | PinCapabilities::PWM |
-                       PinCapabilities::ISR | PinCapabilities::UART;
-
-            case 6:  // SPI flash integrated
+            // case 34:  // Input only pins
+            case 6: //ESP32S3
             case 7:
             case 8:
             case 11:
-                return PinCapabilities::Reserved;
-
-            // case 34:  // Input only pins
-            case 20:
+            case 20:            
             case 40:
             case 41:
             case 42:
@@ -86,6 +79,11 @@ namespace Pins {
             case 39:
                 // return PinCapabilities::Native | PinCapabilities::Input | PinCapabilities::ADC | PinCapabilities::ISR | PinCapabilities::UART;
                 // break;
+            case 25:
+            case 26:
+                return PinCapabilities::Native | PinCapabilities::Input | PinCapabilities::Output | PinCapabilities::PullUp |
+                       PinCapabilities::PullDown | PinCapabilities::ADC | PinCapabilities::DAC | PinCapabilities::PWM |
+                       PinCapabilities::ISR | PinCapabilities::UART;
 
             default:  // Not mapped to actual GPIO pins
                 return PinCapabilities::None;
