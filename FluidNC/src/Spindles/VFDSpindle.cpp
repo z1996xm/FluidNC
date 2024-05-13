@@ -208,11 +208,11 @@ namespace Spindles {
                 size_t current_read = uart.timedReadBytes(rx_message, next_cmd.rx_length, response_ticks);
                 read_length += current_read;
 
-                int retry_count_test = 0;
-                for (; retry_count_test < 16; retry_count_test++) {
-                    log_debug(rx_message[retry_count_test]);
-                }
-                log_debug(current_read);
+                // int retry_count_test = 0;
+                // for (; retry_count_test < 16; retry_count_test++) {
+                //     log_debug(rx_message[retry_count_test]);
+                // }
+                // log_debug(current_read);
                 
                 // Apparently some Huanyang report modbus errors in the correct way, and the rest not. Sigh.
                 // Let's just check for the condition, and truncate the first byte.

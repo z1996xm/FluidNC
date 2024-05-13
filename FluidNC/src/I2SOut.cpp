@@ -4,17 +4,34 @@
 // Use of this source code is governed by a GPLv3 license that can be found in the LICENSE file.
 
 #include "I2SOut.h"
-
+#include "src/machine/I2SOBus.h"
+#include "src/Machine/MachineConfig.h"
 #include <sdkconfig.h>
+#include "driver/gpio.h"
+#include "hal/gpio_hal.h"
 
 #ifndef CONFIG_IDF_TARGET_ESP32
 // The newer ESP32 variants have quite different I2S hardware engines
 // then the old ESP32 hardware.  For now we stub out I2S support for new ESP32s
 
+static gpio_dev_t* _gpio_dev = GPIO_HAL_GET_HW(GPIO_PORT_0);
+
+i2s_out_init_t init_param;
+
 uint8_t i2s_out_read(pinnum_t pin) {
     return 0;
 }
-void i2s_out_write(pinnum_t pin, uint8_t val) {}
+
+void i2s_out_write(pinnum_t pin, uint8_t val) {
+    gpio_ll_set_level(_gpio_dev, (gpio_num_t)init_param.ws_pin, 0);
+    for (int i = 0; i < 8; i++) {
+        gpio_ll_set_level(_gpio_dev, (gpio_num_t)init_param.data_pin, !!(val & bitnum_to_mask(8 - 1 - i)));
+        gpio_ll_set_level(_gpio_dev, (gpio_num_t)init_param.bck_pin, 1);
+        gpio_ll_set_level(_gpio_dev, (gpio_num_t)init_param.bck_pin, 0);
+    }   
+    gpio_ll_set_level(_gpio_dev, (gpio_num_t)init_param.ws_pin, 1); 
+}
+
 void i2s_out_push_sample(uint32_t usec) {}
 void i2s_out_push() {}
 void i2s_out_delay() {}
@@ -33,7 +50,53 @@ int i2s_out_set_pulse_period(uint32_t period) {
 int i2s_out_reset() {
     return 0;
 }
-int i2s_out_init() {
+
+static void gpio_out_check(pinnum_t gpio){
+    if (gpio != 255) {
+        PIN_FUNC_SELECT(GPIO_PIN_MUX_REG[gpio], PIN_FUNC_GPIO);
+        gpio_set_direction((gpio_num_t)gpio, (gpio_mode_t)GPIO_MODE_DEF_OUTPUT);        
+    }    
+}
+
+int i2s_out_init(){
+    auto i2so = config->_i2so;
+    if (!i2so) {
+        return -1;
+    }
+    Pin& wsPin   = i2so->_ws;
+    Pin& bckPin  = i2so->_bck;
+    Pin& dataPin = i2so->_data;
+
+    // Check capabilities:
+    if (!wsPin.capabilities().has(Pin::Capabilities::Output | Pin::Capabilities::Native)) {
+        log_info("Not setting up I2SO: WS pin has incorrect capabilities");
+        return -1;
+    } else if (!bckPin.capabilities().has(Pin::Capabilities::Output | Pin::Capabilities::Native)) {
+        log_info("Not setting up I2SO: BCK pin has incorrect capabilities");
+        return -1;
+    } else if (!dataPin.capabilities().has(Pin::Capabilities::Output | Pin::Capabilities::Native)) {
+        log_info("Not setting up I2SO: DATA pin has incorrect capabilities");
+        return -1;
+    } else {
+        init_param.ws_pin       = wsPin.getNative(Pin::Capabilities::Output | Pin::Capabilities::Native);
+        init_param.bck_pin      = bckPin.getNative(Pin::Capabilities::Output | Pin::Capabilities::Native);
+        init_param.data_pin     = dataPin.getNative(Pin::Capabilities::Output | Pin::Capabilities::Native);
+        init_param.pulse_period = I2S_OUT_USEC_PER_PULSE;
+        init_param.init_val     = 0;
+    } 
+
+    gpio_out_check(init_param.ws_pin);
+    gpio_out_check(init_param.bck_pin);
+    gpio_out_check(init_param.data_pin);
+
+    u8_t data[]={0x20,0x60,0xe0};
+    i2s_out_write(0,data[0]);
+    delay_ms(500);
+    i2s_out_write(0,data[1]);
+    delay_ms(500);
+    i2s_out_write(0,data[2]);
+    delay_ms(500);
+
     return -1;
 }
 #else

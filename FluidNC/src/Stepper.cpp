@@ -231,7 +231,6 @@ bool IRAM_ATTR Stepper::pulse_func() {
                 st.steps[axis] = st.exec_block->steps[axis] >> st.exec_segment->amass_level;
             }
             // Set real-time spindle output as segment is loaded, just prior to the first step.
-            log_debug("spindle_dev_speed");
             spindle->setSpeedfromISR(st.exec_segment->spindle_dev_speed);
         } else {
             // Segment buffer empty. Shutdown.

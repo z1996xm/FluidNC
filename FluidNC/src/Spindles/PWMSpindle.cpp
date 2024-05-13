@@ -43,7 +43,6 @@ namespace Spindles {
         }
         setupSpeeds(_pwm->period());
         config_message();
-        set_output(20);
     }
 
     void IRAM_ATTR PWM::setSpeedfromISR(uint32_t dev_speed) {
@@ -80,18 +79,15 @@ namespace Spindles {
         // converters on some boards.
 
         if (isRateAdjusted() && (state == SpindleState::Ccw)) {
-            log_debug("offSpeed");
             dev_speed = offSpeed();
-            log_debug(dev_speed);
             set_output(dev_speed);
         } else {
-            log_debug("isRateAdjusted");
-            set_output(50);
-            // set_output(dev_speed);
+            set_output(dev_speed);
         }
 
         set_enable(state != SpindleState::Disable);
         spindleDelay(state, speed);
+
     }
 
     // prints the startup message of the spindle config
@@ -113,9 +109,9 @@ namespace Spindles {
         }
 
         _current_pwm_duty = duty;
-        _pwm->setDuty(duty);
         log_debug("setDuty");
         log_debug(_current_pwm_duty);
+        _pwm->setDuty(duty);
     }
 
     void PWM::deinit() {

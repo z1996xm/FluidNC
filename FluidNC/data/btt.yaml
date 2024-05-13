@@ -228,7 +228,7 @@ PWM:
   enable_pin: I2SO.1
   direction_pin: I2SO.2
   disable_with_s0: false
-  s0_with_disable: true
+  s0_with_disable: false
   spinup_ms: 0
   spindown_ms: 0
   tool_num: 0

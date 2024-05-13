@@ -153,3 +153,4 @@ int i2s_out_reset();
    Reference: "ESP32 Technical Reference Manual" by Espressif Systems
      https://www.espressif.com/sites/default/files/documentation/esp32_technical_reference_manual_en.pdf
  */
+
