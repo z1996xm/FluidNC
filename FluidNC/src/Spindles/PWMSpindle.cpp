@@ -109,8 +109,6 @@ namespace Spindles {
         }
 
         _current_pwm_duty = duty;
-        log_debug("setDuty");
-        log_debug(_current_pwm_duty);
         _pwm->setDuty(duty);
     }
 

@@ -248,7 +248,7 @@ oled:
 
 status_outputs:
   report_interval_ms: 500
-  idle_pin: I2SO.5
-  run_pin: I2SO.6
-  alarm_pin: I2SO.7
+  idle_pin: I2SO.5:low
+  run_pin: I2SO.6:low
+  alarm_pin: I2SO.7:low
 # hold_pin: gpio.16

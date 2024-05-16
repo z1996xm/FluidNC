@@ -17,19 +17,27 @@
 static gpio_dev_t* _gpio_dev = GPIO_HAL_GET_HW(GPIO_PORT_0);
 
 i2s_out_init_t init_param;
+static u8_t last_write_value =0;
 
 uint8_t i2s_out_read(pinnum_t pin) {
-    return 0;
+    u8_t value = 0;
+    value = ((1<<pin)&last_write_value);
+    return value;
 }
 
 void i2s_out_write(pinnum_t pin, uint8_t val) {
+    static u8_t write_value =0;
+    if(val)write_value =((val<<pin) | write_value);
+    else write_value = ((~(1<<pin))&write_value);
+
     gpio_ll_set_level(_gpio_dev, (gpio_num_t)init_param.ws_pin, 0);
     for (int i = 0; i < 8; i++) {
-        gpio_ll_set_level(_gpio_dev, (gpio_num_t)init_param.data_pin, !!(val & bitnum_to_mask(8 - 1 - i)));
+        gpio_ll_set_level(_gpio_dev, (gpio_num_t)init_param.data_pin, !!(write_value & bitnum_to_mask(8 - 1 - i)));
         gpio_ll_set_level(_gpio_dev, (gpio_num_t)init_param.bck_pin, 1);
         gpio_ll_set_level(_gpio_dev, (gpio_num_t)init_param.bck_pin, 0);
     }   
     gpio_ll_set_level(_gpio_dev, (gpio_num_t)init_param.ws_pin, 1); 
+    last_write_value = write_value;
 }
 
 void i2s_out_push_sample(uint32_t usec) {}
@@ -89,15 +97,7 @@ int i2s_out_init(){
     gpio_out_check(init_param.bck_pin);
     gpio_out_check(init_param.data_pin);
 
-    u8_t data[]={0x20,0x60,0xe0};
-    i2s_out_write(0,data[0]);
-    delay_ms(500);
-    i2s_out_write(0,data[1]);
-    delay_ms(500);
-    i2s_out_write(0,data[2]);
-    delay_ms(500);
-
-    return -1;
+    return 0;
 }
 #else
 #    include "Config.h"

@@ -15,7 +15,7 @@
 
 //Use XTAL clock if possible to avoid timer frequency error when setting APB clock < 80 Mhz
 //Need to be fixed in ESP-IDF
-#ifdef SOC_LEDC_SUPPORT_XTAL_CLOCK
+#if SOC_LEDC_SUPPORT_XTAL_CLOCK
 #    define LEDC_DEFAULT_CLK LEDC_USE_XTAL_CLK
 #else
 #    define LEDC_DEFAULT_CLK LEDC_AUTO_CLK
@@ -60,7 +60,7 @@ static uint8_t calc_pwm_precision(uint32_t frequency) {
     // Increase the precision (bits) until it exceeds the frequency
     // The hardware maximum precision is 20 bits
     const uint8_t  ledcMaxBits = 20;
-    const uint32_t apbFreq     = 40000000;
+    const uint32_t apbFreq     = 80000000;
     const uint32_t maxCount    = apbFreq / frequency;
     for (uint8_t bits = 2; bits <= ledcMaxBits; ++bits) {
         if ((1u << bits) > maxCount) {
@@ -83,17 +83,7 @@ PwmPin::PwmPin(Pin& pin, uint32_t frequency) : _frequency(frequency) {
                                        .timer_num       = timer,
                                        .freq_hz         = frequency,
                                        .clk_cfg         = LEDC_DEFAULT_CLK };
-    log_debug("bits");
-    log_debug(bits);
-    log_debug("_period");
-    log_debug(_period);
-    log_debug("_channel");
-    log_debug(_channel);  
-    log_debug("group");
-    log_debug(group);      
-    log_debug("timer");
-    log_debug(timer);   
-
+ 
     if (ledc_timer_config(&ledc_timer) != ESP_OK) {
         log_error("ledc timer setup failed");
         throw -1;
@@ -108,7 +98,7 @@ PwmPin::PwmPin(Pin& pin, uint32_t frequency) : _frequency(frequency) {
                                            .channel    = ledc_channel_t(_channel),
                                            .intr_type  = LEDC_INTR_DISABLE,
                                            .timer_sel  = timer,
-                                           .duty       = 0,
+                                           .duty       = 4095,             //4095 50%
                                            .hpoint     = 0,
                                            .flags      = { .output_invert = isActiveLow } };
     if (ledc_channel_config(&ledc_channel) != ESP_OK) {
