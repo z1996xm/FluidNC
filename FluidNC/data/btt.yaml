@@ -198,14 +198,14 @@ sdcard:
   frequency_hz: 8000000
 # I2SO.3
 
-coolant:
-  flood_pin: gpio.2:high
-  mist_pin:  gpio.3:low
+# coolant:
+#   flood_pin: gpio.2:high
+#   mist_pin:  gpio.3:low
 # gpio.4 # HB MOS
 
-probe:
-  pin: gpio.5:low:pu
-  toolsetter_pin: gpio.14:low
+# probe:
+#   pin: gpio.5:low:pu
+#   toolsetter_pin: gpio.14:low
 
 # # Begin Huanyang
 # uart1:
