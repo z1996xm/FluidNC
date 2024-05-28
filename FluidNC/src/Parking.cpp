@@ -18,6 +18,7 @@ void Parking::moveto(float* target) {
         sys.step_control.endMotion        = false;  // Allow parking motion to execute, if feed hold is active.
         Stepper::parking_setup_buffer();            // Setup step segment buffer for special parking motion case
         Stepper::prep_buffer();
+        log_info("moveto_wake_up");
         Stepper::wake_up();
         do {
             protocol_exec_rt_system();

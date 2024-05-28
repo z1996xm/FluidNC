@@ -67,7 +67,6 @@ namespace Machine {
         for (int axis = 0; axis < _numberAxis; axis++) {
             set_disable(axis, disable);
         }
-
         _sharedStepperDisable.synchronousWrite(disable);
 
         if (!disable && disabled) {

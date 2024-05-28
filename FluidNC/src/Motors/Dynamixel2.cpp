@@ -70,7 +70,7 @@ namespace MotorDrivers {
 
         set_disable(true);                              // turn off torque so we can set EEPROM registers
         set_operating_mode(DXL_CONTROL_MODE_POSITION);  // set it in the right control mode
-
+        
         // servos will blink in axis order for reference
         LED_on(true);
         vTaskDelay(100);

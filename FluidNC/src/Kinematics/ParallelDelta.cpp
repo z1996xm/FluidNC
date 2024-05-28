@@ -294,7 +294,6 @@ namespace Kinematics {
         auto n_axis = axes->_numberAxis;
 
         config->_axes->set_disable(false);
-
         // TODO deal with non kinematic axes above Z
         for (int axis = 0; axis < 3; axis++) {
             //set_motor_steps(axis, mpos_to_steps(axes->_axis[axis]->_homing->_mpos, axis));

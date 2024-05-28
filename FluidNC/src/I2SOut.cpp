@@ -97,7 +97,7 @@ int i2s_out_init(){
     gpio_out_check(init_param.bck_pin);
     gpio_out_check(init_param.data_pin);
 
-#if 1
+#if 0
     i2s_out_write(5,1);
     delay(1000);
     i2s_out_write(6,1);
