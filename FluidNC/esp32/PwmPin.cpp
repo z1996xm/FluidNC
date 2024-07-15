@@ -99,6 +99,7 @@ PwmPin::PwmPin(const Pin& pin, uint32_t frequency) : _frequency(frequency) {
                                            .intr_type  = LEDC_INTR_DISABLE,
                                            .timer_sel  = timer,
                                            .duty       = 0,
+                                            // .duty       = 4095,     //4095 50%    
                                            .hpoint     = 0,
                                            .flags      = { .output_invert = isActiveLow } };
     if (ledc_channel_config(&ledc_channel) != ESP_OK) {

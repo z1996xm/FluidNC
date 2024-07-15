@@ -922,6 +922,35 @@ int i2s_out_init() {
         return -1;
     }
 
+#if 0
+    // pinMode(39, OUTPUT);
+    // pinMode(38, OUTPUT);
+    // pinMode(25, OUTPUT);
+    pinMode(2, OUTPUT);
+    pinMode(12, OUTPUT);  
+    pinMode(4, OUTPUT);  
+
+    // i2s_out_write(3,1);
+    // delay(1000);
+    // i2s_out_write(3,0);
+    // delay(1000);
+    // i2s_out_write(11,1);
+    // delay(1000);
+    // i2s_out_write(11,0);
+    // delay(1000);
+    // i2s_out_write(14,1);
+    // delay(1000);
+    // i2s_out_write(14,0);
+    // delay(1000);
+
+    // digitalWrite(39, 1);
+    // digitalWrite(38, 1);
+    // digitalWrite(25, 1);
+    digitalWrite(2, 1);
+    digitalWrite(12, 1);
+    digitalWrite(4, 1);
+#endif
+
     Pin& wsPin   = i2so->_ws;
     Pin& bckPin  = i2so->_bck;
     Pin& dataPin = i2so->_data;

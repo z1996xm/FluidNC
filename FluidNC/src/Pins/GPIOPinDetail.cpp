@@ -33,6 +33,8 @@ namespace Pins {
             case 9:
             case 10:
             case 16:
+                return PinCapabilities::Native | PinCapabilities::Output | PinCapabilities::Input | PinCapabilities::ISR |
+                       PinCapabilities::UART;
             case 17:
             case 18:
             case 19:
@@ -77,7 +79,7 @@ namespace Pins {
             case 38:
                 return PinCapabilities::Native | PinCapabilities::Input | PinCapabilities::Output | PinCapabilities::PullUp;
             case 39:
-                return PinCapabilities::Native | PinCapabilities::Input | PinCapabilities::ADC | PinCapabilities::ISR | PinCapabilities::UART;
+                return PinCapabilities::Native | PinCapabilities::Input | PinCapabilities::Output | PinCapabilities::ADC | PinCapabilities::ISR | PinCapabilities::UART;
                 break;
 
             default:  // Not mapped to actual GPIO pins
